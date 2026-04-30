@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДОСКА ПОЧЁТА | MARKIS</title>
+    <style>
+        body {
+            background-color: #0d0d12;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #ffffff;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0; padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
+            /* Улучшаем чёткость шрифтов во всем браузере */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        h1 {
+            font-size: 3rem; text-transform: uppercase; letter-spacing: 5px;
+            text-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff;
+            margin-bottom: 50px; text-align: center;
+        }
+
+        .board-container {
+            display: flex; gap: 25px; max-width: 1300px; width: 100%;
+            flex-wrap: wrap; justify-content: center;
+        }
+
+        .column {
+            flex: 1; min-width: 350px; border-radius: 15px; padding: 25px;
+            background: linear-gradient(145deg, #1a1a24, #12121a);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5); border: 1px solid #2a2a35;
+            display: flex; flex-direction: column;
+        }
+
+        .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
+        .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
+        .col-fame { border: 2px solid #ff5e00; box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
+
+        .column h2 {
+            text-align: center; font-size: 1.8rem; margin-top: 0; padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
+        }
+        .col-legends h2 { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
+        .col-sheikhs h2 { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
+        .col-fame h2 { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
+
+        .card {
+            background: #15151c; border-radius: 8px; padding: 15px; margin-bottom: 12px;
+            border: 1px solid #222; position: relative; padding-left: 25px;
+            /* Плавность без принудительного ускорения в покое */
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+            transform: scale(1);
+        }
+
+        .card:hover {
+            /* Включаем "мощность" только при наведении */
+            transform: scale(1.04);
+            z-index: 10;
+            cursor: default;
+        }
+
+        .card::before {
+            content: ''; position: absolute; left: 8px; top: 15%; bottom: 15%;
+            width: 3px; border-radius: 2px;
+        }
+        .col-legends .card::before { background: #ff26a5; box-shadow: 0 0 8px #ff26a5; }
+        .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+        .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
+
+        /* Достижения (Мягкий неон) */
+        .card-title {
+            font-size: 0.85rem; margin-bottom: 6px; text-transform: uppercase;
+            letter-spacing: 1px; font-weight: 500;
+        }
+        .col-legends .card-title { color: #ff26a5; opacity: 0.7; text-shadow: 0 0 5px rgba(255, 38, 165, 0.3); }
+        .col-sheikhs .card-title { color: #ffcc00; opacity: 0.7; text-shadow: 0 0 5px rgba(255, 204, 0, 0.3); }
+        .col-fame .card-title { color: #ff5e00; opacity: 0.7; text-shadow: 0 0 5px rgba(255, 94, 0, 0.3); }
+
+        /* Ники (Яркий неон) */
+        .card-value { font-size: 1.15rem; font-weight: bold; }
+        .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
+        .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
+        .col-fame .card-value { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
+
+        .date-stamp { margin-top: 40px; color: #444; font-size: 0.9rem; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <h1>ДОСКА ПОЧЁТА КАНАЛА MARKIS</h1>
+
+    <div class="board-container">
+        <div class="column col-legends" id="legends-col"><h2>ЛЕГЕНДЫ ЧАТА 💬</h2></div>
+        <div class="column col-sheikhs" id="sheikhs-col"><h2>ШЕЙХИ КАНАЛА $</h2></div>
+        <div class="column col-fame" id="fame-col"><h2>ЗАЛ СЛАВЫ 🏆</h2></div>
+    </div>
+
+    <div class="date-stamp" id="date-stamp"></div>
+
+    <script src="data.js"></script>
+
+    <script>
+        function renderCards(containerId, items) {
+            const container = document.getElementById(containerId);
+            if (!container || !items) return;
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<div class="card-title">${item.title}</div><div class="card-value">${item.value}</div>`;
+                container.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof boardData !== 'undefined') {
+                renderCards('legends-col', boardData.legends);
+                renderCards('sheikhs-col', boardData.sheikhs);
+                renderCards('fame-col', boardData.hallOfFame);
+                document.getElementById('date-stamp').innerText = boardData.dateStamp;
+            }
+        });
+    </script>
+</body>
+</html>
