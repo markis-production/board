@@ -3,7 +3,6 @@ const boardData = {
     legends: [
         { title: "Главный болтун", value: "Кофе — 94.900 сооб." },
         { title: "Болтун месяца", value: "Nobi967 — 9.800 сооб." },
-        { title: "Спонсоры квестов", value: "DEMO — 3000 руб." },
         { title: "Звёздная реакция", value: "AKULKA — 63 шт." },
         { title: "Новый админ", value: "РЕМ" }
     ],
