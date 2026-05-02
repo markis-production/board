@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="favicon.png">
 
     <style>
-        /* ИСПРАВЛЕНИЕ #1: Заставляет браузер учитывать отступы внутри ширины элементов */
+        /* Обязательно оставляем этот фикс, чтобы браузер правильно считал ширину с отступами */
         * {
             box-sizing: border-box;
         }
@@ -27,7 +27,6 @@
             overflow-x: hidden;
         }
 
-        /* КОНТЕЙНЕР ДЛЯ МАСШТАБИРОВАНИЯ (ПЛАКАТ) */
         #outer-container {
             width: 100%;
             display: flex;
@@ -37,7 +36,7 @@
         }
 
         #scale-wrapper {
-            width: 1300px; /* Жесткая ширина плаката для ПК */
+            width: 1300px; /* Жесткая ширина плаката сохраняется */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -58,7 +57,6 @@
             justify-content: center;
         }
 
-        /* ДИЗАЙН СТОЛБИКОВ */
         .column {
             flex: 1;
             min-width: 350px; border-radius: 15px; padding: 25px;
@@ -70,19 +68,14 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
         
-        /* Эффект при наведении на главном экране */
         #scale-wrapper .column:hover {
             transform: translateY(-10px);
             box-shadow: 5px 15px 25px rgba(0,0,0,0.8);
         }
 
-        /* Цвета обводок */
-        .col-legends { border: 2px solid #ff26a5;
-            box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
-        .col-sheikhs { border: 2px solid #ffcc00;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
-        .col-fame { border: 2px solid #ff5e00;
-            box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
+        .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
+        .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
+        .col-fame { border: 2px solid #ff5e00; box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
 
         .column h2 {
             text-align: center;
@@ -93,7 +86,6 @@
         .col-sheikhs h2 { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
         .col-fame h2 { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
-        /* ДИЗАЙН КАРТОЧЕК */
         .card {
             background: #15151c;
             border-radius: 10px; padding: 20px; margin-bottom: 15px;
@@ -121,7 +113,7 @@
         .date-stamp { margin-top: 40px; color: #444; font-size: 1.1rem; letter-spacing: 2px; }
 
         /* =========================================
-           МОДАЛЬНОЕ ОКНО (ВЫЛЕТ НА ПЕРЕДНИЙ ПЛАН) 
+           МОДАЛЬНОЕ ОКНО
            ========================================= */
         #modal-overlay {
             position: fixed;
@@ -146,7 +138,6 @@
             max-width: 600px;
             margin: auto;
             cursor: default;
-            /* ИСПРАВЛЕНИЕ #2: Защита от наезда текста на крестик */
             padding-top: 65px; 
             transform: translateY(50px) scale(0.95);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -169,31 +160,20 @@
             box-shadow: 0 0 15px #ff26a5;}
 
         /* =========================================
-           ИСПРАВЛЕНИЕ #3: ОТДЕЛЬНАЯ МОБИЛЬНАЯ ВЕРСИЯ 
+           АДАПТАЦИЯ ТОЛЬКО ДЛЯ МОДАЛЬНОГО ОКНА НА ТЕЛЕФОНЕ
            ========================================= */
         @media (max-width: 900px) {
-            #scale-wrapper {
-                width: 100%; /* Убираем жесткую ширину для телефонов */
-                padding: 0 15px;
-            }
-            .board-container {
-                flex-direction: column; /* Ставим столбики друг под друга */
-            }
-            .column {
-                min-width: 100%;
-            }
-            h1 {
-                font-size: 2rem; /* Чуть меньше заголовок */
-                margin-bottom: 30px;
-            }
+            /* Задний фон (главная страница) теперь масштабируется скриптом (будет 3 колонки),
+               а вот это всплывающее окно мы делаем удобным для телефона! */
             #modal-overlay {
-                padding: 20px 10px; /* Меньше отступов по краям на мобилках */
+                padding: 20px 10px; /* Уменьшаем отступы по краям */
             }
             #modal-content {
-                max-width: 100%; /* Чтобы обводка 100% не резалась */
+                max-width: 100%; /* Чтобы карточка занимала всю ширину телефона */
+                padding-top: 55px; /* Защита от наезда крестика на заголовок */
             }
             .close-btn {
-                top: 10px; right: 10px; /* Двигаем крестик чуть правее и выше на телефоне */
+                top: 10px; right: 10px; /* Двигаем крестик удобнее под палец */
             }
         }
         
@@ -237,22 +217,14 @@
     <script src="data.js"></script>
 
     <script>
-        // Функция масштабирования главной страницы под экран
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const outer = document.getElementById('outer-container');
             const screenWidth = window.innerWidth;
-
-            // ИСПРАВЛЕНИЕ #4: Отключаем JS-масштабирование на телефонах
-            // Вместо него будет работать красивый CSS дизайн из @media
-            if (screenWidth <= 900) {
-                wrapper.style.transform = 'none';
-                outer.style.height = 'auto';
-                return;
-            }
-
             const targetWidth = 1350; // 1300 + отступы по краям
 
+            // Теперь масштабирование работает ВСЕГДА (и на ПК, и на телефоне)
+            // Это превратит сайт на мобилке в читаемый "мини-плакат"
             if (screenWidth < targetWidth) {
                 const scale = screenWidth / targetWidth;
                 wrapper.style.transform = `scale(${scale})`;
@@ -266,7 +238,6 @@
 
         window.addEventListener('resize', adjustScale);
 
-        // Функция рендера карточек на главной
         function renderCards(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !items) return;
@@ -276,11 +247,9 @@
                 card.innerHTML = `<div class="card-title">${item.title}</div><div class="card-value">${item.value}</div>`;
                 container.appendChild(card);
             });
-            // Вызываем масштабирование после загрузки карточек
             adjustScale();
         }
 
-        // ОТКРЫТИЕ ВЫЛЕТАЮЩЕГО СТОЛБИКА
         function openModal(type) {
             if (typeof boardData === 'undefined') return;
             const overlay = document.getElementById('modal-overlay');
@@ -288,7 +257,6 @@
             const title = document.getElementById('modal-title');
             const dataContainer = document.getElementById('modal-data');
 
-            // Сбрасываем старые стили цвета
             content.className = 'column';
             dataContainer.innerHTML = '';
 
@@ -296,7 +264,6 @@
             let colClass = '';
             let titleText = '';
 
-            // Определяем, на что нажали
             if (type === 'legends') {
                 targetData = boardData.legends;
                 colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
@@ -308,11 +275,9 @@
                 colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
             }
 
-            // Применяем правильный цвет и заголовок
             content.classList.add(colClass);
             title.innerText = titleText;
 
-            // Копируем карточки в модальное окно
             targetData.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -320,20 +285,16 @@
                 dataContainer.appendChild(card);
             });
 
-            // Показываем окно и отключаем скролл на заднем фоне
             overlay.classList.add('visible');
             document.body.style.overflow = 'hidden';
         }
 
-        // ЗАКРЫТИЕ СТОЛБИКА
         function closeModal(event) {
-            // Если клик был по крестику или по темному фону (мимо карточки)
             const overlay = document.getElementById('modal-overlay');
             overlay.classList.remove('visible');
-            document.body.style.overflow = ''; // Возвращаем скролл
+            document.body.style.overflow = '';
         }
 
-        // Запуск при загрузке
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof boardData !== 'undefined') {
                 renderCards('legends-col', boardData.legends);
