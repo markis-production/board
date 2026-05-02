@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta id="viewport-meta" name="viewport" content="width=1300">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ДОСКА ПОЧЁТА | MARKIS</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
@@ -16,28 +16,42 @@
             background-size: 30px 30px;
             color: #ffffff;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
+            margin: 0; 
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+        }
+
+        /* КОНТЕЙНЕР ДЛЯ МАСШТАБИРОВАНИЯ (ПЛАКАТ) */
+        #outer-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        #scale-wrapper {
+            width: 1300px; /* Жесткая ширина плаката */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: top center;
         }
 
         h1 {
             font-size: 3rem; text-transform: uppercase; letter-spacing: 5px;
             text-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff;
             margin-bottom: 50px; text-align: center;
-            transition: opacity 0.4s ease;
         }
 
         .board-container {
             display: flex; gap: 25px; 
-            width: 1300px; 
+            width: 100%; 
             justify-content: center;
         }
 
-        body.focus-mode h1 { opacity: 0; pointer-events: none; height: 0; margin: 0; }
-
+        /* ДИЗАЙН СТОЛБИКОВ */
         .column {
             flex: 1; min-width: 350px; border-radius: 15px; padding: 25px;
             background: linear-gradient(145deg, #1a1a24, #12121a);
@@ -45,57 +59,33 @@
             display: flex; flex-direction: column;
             cursor: pointer;
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        /* Эффект при наведении на главном экране */
+        #scale-wrapper .column:hover {
+            transform: translateY(-10px);
+            box-shadow: 5px 15px 25px rgba(0,0,0,0.8);
         }
 
-        /* СОСТОЯНИЕ РАЗВЕРНУТОЙ КОЛОНКИ */
-        .column.expanded {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100% !important; height: 100% !important;
-            z-index: 9999;
-            cursor: default;
-            overflow-y: auto;
-            border-radius: 0;
-            padding: 40px 20px;
-            border: none;
-            box-shadow: none;
-            background: #0d0d12; /* Чистый фон в режиме фокуса */
-        }
-
-        .board-container.has-expanded .column:not(.expanded) {
-            opacity: 0; pointer-events: none;
-        }
-
-        .close-btn {
-            position: fixed; top: 20px; right: 20px;
-            width: 60px; height: 60px; border-radius: 50%;
-            background: #ff26a5; border: none;
-            color: black; font-size: 30px; font-weight: bold;
-            display: none; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10001;
-            box-shadow: 0 0 20px #ff26a5;
-        }
-        .column.expanded .close-btn { display: flex; }
-
-        /* ЦВЕТА (ВОЗВРАЩЕНО И УЛУЧШЕНО) */
+        /* Цвета обводок */
         .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
         .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
         .col-fame { border: 2px solid #ff5e00; box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
 
         .column h2 {
-            text-align: center; font-size: 2.2rem; margin-top: 0; padding-bottom: 20px;
+            text-align: center; font-size: 2rem; margin-top: 0; padding-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
         }
         .col-legends h2 { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs h2 { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
         .col-fame h2 { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
+        /* ДИЗАЙН КАРТОЧЕК */
         .card {
             background: #15151c; border-radius: 10px; padding: 20px; margin-bottom: 15px;
             border: 1px solid #222; position: relative; padding-left: 35px;
         }
-        
         .card::before {
             content: ''; position: absolute; left: 12px; top: 20%; bottom: 20%;
             width: 4px; border-radius: 4px;
@@ -115,39 +105,108 @@
         .col-fame .card-value { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
         .date-stamp { margin-top: 40px; color: #444; font-size: 1.1rem; letter-spacing: 2px; }
+
+        /* =========================================
+           МОДАЛЬНОЕ ОКНО (ВЫЛЕТ НА ПЕРЕДНИЙ ПЛАН) 
+           ========================================= */
+        #modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 13, 18, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            display: flex; justify-content: center; align-items: flex-start;
+            overflow-y: auto;
+            padding: 40px 20px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #modal-overlay.visible {
+            opacity: 1; pointer-events: auto;
+        }
+
+        #modal-content {
+            width: 100%; max-width: 600px; /* Идеально для телефонов */
+            margin: auto;
+            cursor: default;
+            /* Анимация вылета снизу */
+            transform: translateY(50px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        #modal-overlay.visible #modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px;
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 22px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10001; transition: 0.3s;
+        }
+        .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5; box-shadow: 0 0 15px #ff26a5;}
+        
     </style>
 </head>
 <body>
 
-    <h1>ДОСКА ПОЧЁТА КАНАЛА MARKIS</h1>
+    <div id="outer-container">
+        <div id="scale-wrapper">
+            <h1>ДОСКА ПОЧЁТА КАНАЛА MARKIS</h1>
+            
+            <div class="board-container">
+                <div class="column col-legends" onclick="openModal('legends')">
+                    <h2>ЛЕГЕНДЫ ЧАТА 💬</h2>
+                    <div id="legends-col"></div>
+                </div>
 
-    <div class="board-container" id="main-container">
-        <div class="column col-legends" onclick="expandColumn(this)">
-            <button class="close-btn" onclick="closeColumn(event, this)">✕</button>
-            <h2>ЛЕГЕНДЫ ЧАТА 💬</h2>
-            <div id="legends-col"></div>
-        </div>
+                <div class="column col-sheikhs" onclick="openModal('sheikhs')">
+                    <h2>ШЕЙХИ КАНАЛА $</h2>
+                    <div id="sheikhs-col"></div>
+                </div>
 
-        <div class="column col-sheikhs" onclick="expandColumn(this)">
-            <button class="close-btn" onclick="closeColumn(event, this)">✕</button>
-            <h2>ШЕЙХИ КАНАЛА $</h2>
-            <div id="sheikhs-col"></div>
-        </div>
+                <div class="column col-fame" onclick="openModal('fame')">
+                    <h2>ЗАЛ СЛАВЫ 🏆</h2>
+                    <div id="fame-col"></div>
+                </div>
+            </div>
 
-        <div class="column col-fame" onclick="expandColumn(this)">
-            <button class="close-btn" onclick="closeColumn(event, this)">✕</button>
-            <h2>ЗАЛ СЛАВЫ 🏆</h2>
-            <div id="fame-col"></div>
+            <div class="date-stamp" id="date-stamp"></div>
         </div>
     </div>
 
-    <div class="date-stamp" id="date-stamp"></div>
+    <div id="modal-overlay" onclick="closeModal(event)">
+        <div id="modal-content" class="column" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal(event)">✕</button>
+            <h2 id="modal-title">ТИТУЛ</h2>
+            <div id="modal-data"></div>
+        </div>
+    </div>
 
     <script src="data.js"></script>
 
     <script>
-        const viewport = document.getElementById('viewport-meta');
+        // Функция масштабирования главной страницы под экран
+        function adjustScale() {
+            const wrapper = document.getElementById('scale-wrapper');
+            const outer = document.getElementById('outer-container');
+            const screenWidth = window.innerWidth;
+            const targetWidth = 1350; // 1300 + отступы по краям
 
+            if (screenWidth < targetWidth) {
+                const scale = screenWidth / targetWidth;
+                wrapper.style.transform = `scale(${scale})`;
+                // Подгоняем высоту внешнего контейнера, чтобы не было пустых мест
+                outer.style.height = `${wrapper.offsetHeight * scale + 80}px`; 
+            } else {
+                wrapper.style.transform = 'none';
+                outer.style.height = 'auto';
+            }
+        }
+
+        window.addEventListener('resize', adjustScale);
+
+        // Функция рендера карточек на главной
         function renderCards(containerId, items) {
             const container = document.getElementById(containerId);
             if (!container || !items) return;
@@ -157,36 +216,62 @@
                 card.innerHTML = `<div class="card-title">${item.title}</div><div class="card-value">${item.value}</div>`;
                 container.appendChild(card);
             });
+            // Вызываем масштабирование после загрузки карточек
+            adjustScale(); 
         }
 
-        function expandColumn(col) {
-            if (col.classList.contains('expanded')) return;
-            
-            // На телефоне переключаем в нативный мобильный режим
-            viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
-            
-            const container = document.getElementById('main-container');
-            container.classList.add('has-expanded');
-            col.classList.add('expanded');
-            document.body.classList.add('focus-mode');
-            
-            window.scrollTo({ top: 0, behavior: 'auto' });
+        // ОТКРЫТИЕ ВЫЛЕТАЮЩЕГО СТОЛБИКА
+        function openModal(type) {
+            if (typeof boardData === 'undefined') return;
+
+            const overlay = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            const title = document.getElementById('modal-title');
+            const dataContainer = document.getElementById('modal-data');
+
+            // Сбрасываем старые стили цвета
+            content.className = 'column'; 
+            dataContainer.innerHTML = '';
+
+            let targetData = [];
+            let colClass = '';
+            let titleText = '';
+
+            // Определяем, на что нажали
+            if (type === 'legends') {
+                targetData = boardData.legends; colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
+            } else if (type === 'sheikhs') {
+                targetData = boardData.sheikhs; colClass = 'col-sheikhs'; titleText = 'ШЕЙХИ КАНАЛА $';
+            } else if (type === 'fame') {
+                targetData = boardData.hallOfFame; colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
+            }
+
+            // Применяем правильный цвет и заголовок
+            content.classList.add(colClass);
+            title.innerText = titleText;
+
+            // Копируем карточки в модальное окно
+            targetData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<div class="card-title">${item.title}</div><div class="card-value">${item.value}</div>`;
+                dataContainer.appendChild(card);
+            });
+
+            // Показываем окно и отключаем скролл на заднем фоне
+            overlay.classList.add('visible');
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeColumn(event, btn) {
-            event.stopPropagation();
-            
-            // Возвращаем режим широкого плаката
-            viewport.setAttribute('content', 'width=1300');
-            
-            const col = btn.parentElement;
-            const container = document.getElementById('main-container');
-            
-            container.classList.remove('has-expanded');
-            col.classList.remove('expanded');
-            document.body.classList.remove('focus-mode');
+        // ЗАКРЫТИЕ СТОЛБИКА
+        function closeModal(event) {
+            // Если клик был по крестику или по темному фону (мимо карточки)
+            const overlay = document.getElementById('modal-overlay');
+            overlay.classList.remove('visible');
+            document.body.style.overflow = ''; // Возвращаем скролл
         }
 
+        // Запуск при загрузке
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof boardData !== 'undefined') {
                 renderCards('legends-col', boardData.legends);
