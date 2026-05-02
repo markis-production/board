@@ -8,7 +8,6 @@
     <link rel="icon" type="image/png" href="favicon.png">
 
     <style>
-        /* Обязательно оставляем этот фикс, чтобы браузер правильно считал ширину с отступами */
         * {
             box-sizing: border-box;
         }
@@ -36,7 +35,8 @@
         }
 
         #scale-wrapper {
-            width: 1300px; /* Жесткая ширина плаката сохраняется */
+            /* ИСПРАВЛЕНИЕ: Расширили плакат до 1450px, чтобы текст влазил в одну строку */
+            width: 1450px; 
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -105,16 +105,18 @@
         .col-sheikhs .card-title { color: #ffcc00; }
         .col-fame .card-title { color: #ff5e00; }
 
-        .card-value { font-size: 1.5rem; font-weight: bold; }
+        .card-value { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            /* ИСПРАВЛЕНИЕ: Запрещаем перенос строки для значений */
+            white-space: nowrap; 
+        }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
         .col-fame .card-value { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
         .date-stamp { margin-top: 40px; color: #444; font-size: 1.1rem; letter-spacing: 2px; }
 
-        /* =========================================
-           МОДАЛЬНОЕ ОКНО
-           ========================================= */
         #modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -159,21 +161,16 @@
         .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5;
             box-shadow: 0 0 15px #ff26a5;}
 
-        /* =========================================
-           АДАПТАЦИЯ ТОЛЬКО ДЛЯ МОДАЛЬНОГО ОКНА НА ТЕЛЕФОНЕ
-           ========================================= */
         @media (max-width: 900px) {
-            /* Задний фон (главная страница) теперь масштабируется скриптом (будет 3 колонки),
-               а вот это всплывающее окно мы делаем удобным для телефона! */
             #modal-overlay {
-                padding: 20px 10px; /* Уменьшаем отступы по краям */
+                padding: 20px 10px;
             }
             #modal-content {
-                max-width: 100%; /* Чтобы карточка занимала всю ширину телефона */
-                padding-top: 55px; /* Защита от наезда крестика на заголовок */
+                max-width: 100%;
+                padding-top: 55px;
             }
             .close-btn {
-                top: 10px; right: 10px; /* Двигаем крестик удобнее под палец */
+                top: 10px; right: 10px;
             }
         }
         
@@ -221,14 +218,12 @@
             const wrapper = document.getElementById('scale-wrapper');
             const outer = document.getElementById('outer-container');
             const screenWidth = window.innerWidth;
-            const targetWidth = 1350; // 1300 + отступы по краям
+            /* ИСПРАВЛЕНИЕ: Целевая ширина теперь 1500px для корректного масштабирования нового размера */
+            const targetWidth = 1500; 
 
-            // Теперь масштабирование работает ВСЕГДА (и на ПК, и на телефоне)
-            // Это превратит сайт на мобилке в читаемый "мини-плакат"
             if (screenWidth < targetWidth) {
                 const scale = screenWidth / targetWidth;
                 wrapper.style.transform = `scale(${scale})`;
-                // Подгоняем высоту внешнего контейнера, чтобы не было пустых мест
                 outer.style.height = `${wrapper.offsetHeight * scale + 80}px`;
             } else {
                 wrapper.style.transform = 'none';
