@@ -20,7 +20,6 @@
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
         }
 
@@ -28,21 +27,53 @@
             font-size: 3rem; text-transform: uppercase; letter-spacing: 5px;
             text-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff;
             margin-bottom: 50px; text-align: center;
+            transition: opacity 0.3s;
         }
 
-        /* ВАЖНО: Убрали flex-wrap и жестко задали width в 1300px */
+        /* Контейнер теперь управляет скрытием соседей */
         .board-container {
             display: flex; gap: 25px; 
             width: 1300px; 
             justify-content: center;
+            transition: all 0.5s ease;
         }
+
+        /* Когда включен режим фокуса, скрываем заголовок страницы */
+        body.focus-mode h1 { opacity: 0; pointer-events: none; height: 0; margin: 0; }
 
         .column {
             flex: 1; min-width: 350px; border-radius: 15px; padding: 25px;
             background: linear-gradient(145deg, #1a1a24, #12121a);
             box-shadow: 5px 5px 15px rgba(0,0,0,0.5); border: 1px solid #2a2a35;
             display: flex; flex-direction: column;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* Эффект развертывания */
+        .column.expanded {
+            flex: 0 0 100%;
+            cursor: default;
+            min-height: 80vh;
+        }
+
+        /* Скрываем другие колонки, когда одна развернута */
+        .board-container.has-expanded .column:not(.expanded) {
+            flex: 0; min-width: 0; padding: 0; margin: 0; border: none; opacity: 0; pointer-events: none;
+        }
+
+        /* Кнопка закрытия */
+        .close-btn {
+            position: absolute; top: 15px; right: 20px;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 20px; display: none;
+            align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; z-index: 100;
+        }
+        .column.expanded .close-btn { display: flex; }
+        .close-btn:hover { background: rgba(255, 255, 255, 0.2); transform: rotate(90deg); }
 
         /* Обводка столбиков */
         .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
@@ -60,15 +91,9 @@
         .card {
             background: #15151c; border-radius: 8px; padding: 15px; margin-bottom: 12px;
             border: 1px solid #222; position: relative; padding-left: 25px;
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
-            transform: scale(1);
+            transition: transform 0.2s;
         }
-
-        .card:hover {
-            transform: scale(1.04);
-            z-index: 10;
-            cursor: default;
-        }
+        .column:not(.expanded) .card:hover { transform: scale(1.04); z-index: 10; }
 
         .card::before {
             content: ''; position: absolute; left: 8px; top: 15%; bottom: 15%;
@@ -78,16 +103,11 @@
         .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
         .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
 
-        /* ДОСТИЖЕНИЯ */
-        .card-title {
-            font-size: 0.85rem; margin-bottom: 6px; text-transform: uppercase;
-            letter-spacing: 1px; font-weight: bold;
-        }
+        .card-title { font-size: 0.85rem; margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
         .col-legends .card-title { color: #ff26a5; text-shadow: 0 0 8px rgba(255, 38, 165, 0.5); }
         .col-sheikhs .card-title { color: #ffcc00; text-shadow: 0 0 8px rgba(255, 204, 0, 0.5); }
         .col-fame .card-title { color: #ff5e00; text-shadow: 0 0 8px rgba(255, 94, 0, 0.5); }
 
-        /* НИКИ */
         .card-value { font-size: 1.15rem; font-weight: bold; }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
@@ -100,10 +120,24 @@
 
     <h1>ДОСКА ПОЧЁТА КАНАЛА MARKIS</h1>
 
-    <div class="board-container">
-        <div class="column col-legends" id="legends-col"><h2>ЛЕГЕНДЫ ЧАТА 💬</h2></div>
-        <div class="column col-sheikhs" id="sheikhs-col"><h2>ШЕЙХИ КАНАЛА $</h2></div>
-        <div class="column col-fame" id="fame-col"><h2>ЗАЛ СЛАВЫ 🏆</h2></div>
+    <div class="board-container" id="main-container">
+        <div class="column col-legends" onclick="expandColumn(this)">
+            <div class="close-btn" onclick="closeColumn(event, this)">✕</div>
+            <h2>ЛЕГЕНДЫ ЧАТА 💬</h2>
+            <div id="legends-col"></div>
+        </div>
+
+        <div class="column col-sheikhs" onclick="expandColumn(this)">
+            <div class="close-btn" onclick="closeColumn(event, this)">✕</div>
+            <h2>ШЕЙХИ КАНАЛА $</h2>
+            <div id="sheikhs-col"></div>
+        </div>
+
+        <div class="column col-fame" onclick="expandColumn(this)">
+            <div class="close-btn" onclick="closeColumn(event, this)">✕</div>
+            <h2>ЗАЛ СЛАВЫ 🏆</h2>
+            <div id="fame-col"></div>
+        </div>
     </div>
 
     <div class="date-stamp" id="date-stamp"></div>
@@ -120,6 +154,30 @@
                 card.innerHTML = `<div class="card-title">${item.title}</div><div class="card-value">${item.value}</div>`;
                 container.appendChild(card);
             });
+        }
+
+        // Функция развертывания
+        function expandColumn(col) {
+            if (col.classList.contains('expanded')) return;
+            
+            const container = document.getElementById('main-container');
+            container.classList.add('has-expanded');
+            col.classList.add('expanded');
+            document.body.classList.add('focus-mode');
+            
+            // Плавный скролл вверх при открытии
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Функция закрытия
+        function closeColumn(event, btn) {
+            event.stopPropagation(); // Чтобы не срабатывал клик по самой колонке
+            const col = btn.parentElement;
+            const container = document.getElementById('main-container');
+            
+            container.classList.remove('has-expanded');
+            col.classList.remove('expanded');
+            document.body.classList.remove('focus-mode');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
