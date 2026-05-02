@@ -225,11 +225,32 @@
             #modal-overlay { padding: 20px 10px; }
             #modal-layout { flex-direction: column; gap: 0; }
             #external-info { display: none; }
-            #modal-content { max-width: 100%; padding-top: 55px; }
-            #modal-content .card-value { white-space: normal; word-wrap: break-word; }
-            .close-btn { top: 10px; right: 10px; }
             
-            .info-btn { display: flex; align-items: center; justify-content: center; left: 10px; }
+            #modal-content { 
+                max-width: 100%; 
+                padding-top: 85px;
+            }
+            
+            #modal-content h2 {
+                font-size: 1.6rem;
+                line-height: 1.2;
+            }
+
+            #modal-content .card-value { white-space: normal; word-wrap: break-word; }
+            
+            .close-btn { 
+                top: 15px; 
+                right: 15px; 
+            }
+            
+            .info-btn { 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                left: 15px; 
+                top: 15px;
+            }
+            
             #modal-info-mobile.show-mobile { display: block; }
             #modal-data.hide-mobile { display: none; }
         }
