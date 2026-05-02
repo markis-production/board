@@ -310,6 +310,12 @@
             #modal-content { 
                 max-width: 100%; 
                 padding-top: 85px;
+                transform: translateY(50px) scale(0.95);
+                transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            
+            #modal-overlay.visible #modal-content {
+                transform: translateY(0) scale(1);
             }
             
             #modal-content h2 {
