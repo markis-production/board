@@ -56,6 +56,7 @@
             justify-content: center;
         }
 
+        /* === КОЛОНКИ — как в 1.0, НЕ ТРОГАТЬ === */
         .column {
             flex: 1;
             min-width: 350px; border-radius: 15px; padding: 25px;
@@ -64,15 +65,13 @@
             display: flex; flex-direction: column;
             cursor: pointer;
             position: relative;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
         
         #scale-wrapper .column:hover {
             transform: translateY(-10px);
+            box-shadow: 5px 15px 25px rgba(0,0,0,0.8);
         }
-        #scale-wrapper .col-legends:hover { border-color: #ff5ebc; box-shadow: 0 0 35px rgba(255, 38, 165, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
-        #scale-wrapper .col-sheikhs:hover { border-color: #ffe04d; box-shadow: 0 0 35px rgba(255, 204, 0, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
-        #scale-wrapper .col-fame:hover { border-color: #ff8533; box-shadow: 0 0 35px rgba(255, 94, 0, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
 
         .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
         .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
@@ -87,30 +86,20 @@
         .col-sheikhs h2 { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
         .col-fame h2 { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
+        /* === КАРТОЧКИ — как в 1.0, НЕ ТРОГАТЬ === */
         .card {
             background: #15151c;
             border-radius: 10px; padding: 20px; margin-bottom: 15px;
             border: 1px solid #222; position: relative; padding-left: 35px;
-            transition: all 0.3s ease;
         }
         .card::before {
             content: '';
             position: absolute; left: 12px; top: 20%; bottom: 20%;
             width: 4px; border-radius: 4px;
-            transition: all 0.3s ease;
         }
-        
         .col-legends .card::before { background: #ff26a5; box-shadow: 0 0 8px #ff26a5; }
-        .col-legends .card:hover { transform: translateX(5px); border-color: rgba(255,38,165,0.6); box-shadow: 0 0 15px rgba(255,38,165,0.2); }
-        .col-legends .card:hover::before { box-shadow: 0 0 15px #ff26a5; }
-
         .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
-        .col-sheikhs .card:hover { transform: translateX(5px); border-color: rgba(255,204,0,0.6); box-shadow: 0 0 15px rgba(255,204,0,0.2); }
-        .col-sheikhs .card:hover::before { box-shadow: 0 0 15px #ffcc00; }
-
         .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
-        .col-fame .card:hover { transform: translateX(5px); border-color: rgba(255,94,0,0.6); box-shadow: 0 0 15px rgba(255,94,0,0.2); }
-        .col-fame .card:hover::before { box-shadow: 0 0 15px #ff5e00; }
 
         .card-title { font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
         .col-legends .card-title { color: #ff26a5; }
@@ -120,7 +109,7 @@
         .card-value { 
             font-size: 1.5rem; 
             font-weight: bold; 
-            white-space: nowrap; 
+            white-space: nowrap;
         }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
@@ -128,6 +117,7 @@
 
         .date-stamp { margin-top: 40px; color: #444; font-size: 1.1rem; letter-spacing: 2px; }
 
+        /* === МОДАЛЬНОЕ ОКНО === */
         #modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -154,11 +144,6 @@
             max-width: 1100px;
             width: 100%;
             margin: auto;
-            pointer-events: none; 
-        }
-        
-        #modal-layout > * {
-            pointer-events: auto; 
         }
 
         #external-info {
@@ -168,18 +153,16 @@
             font-size: 1.3rem;
             line-height: 1.6;
             text-transform: uppercase;
-            text-align: left; /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю для идеальной читаемости */
+            text-align: left;
             font-weight: bold;
             opacity: 0;
             transform: translateX(-20px);
             transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        
         #modal-overlay.visible #external-info {
             opacity: 1;
             transform: translateX(0);
         }
-
         .layout-legends #external-info { color: #ffb3e1; text-shadow: 0 0 15px #ff26a5, 0 0 30px #ff26a5; }
         .layout-sheikhs #external-info { color: #ffeea8; text-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00; }
         .layout-fame #external-info { color: #ffc4a3; text-shadow: 0 0 15px #ff5e00, 0 0 30px #ff5e00; }
@@ -197,6 +180,7 @@
             transform: translateY(0) scale(1);
         }
 
+        /* === КНОПКА ЗАКРЫТИЯ С НЕОНОМ ПО ЦВЕТАМ КОЛОНОК === */
         .close-btn {
             position: absolute;
             top: 15px; right: 20px;
@@ -211,6 +195,7 @@
         .col-sheikhs .close-btn:hover { background: #ffcc00; border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00; transform: rotate(90deg); color: #000; }
         .col-fame .close-btn:hover { background: #ff5e00; border-color: #ff5e00; box-shadow: 0 0 15px #ff5e00; transform: rotate(90deg); }
 
+        /* === КНОПКА "ПРАВИЛА" ДЛЯ МОБИЛЬНЫХ === */
         .info-btn {
             display: none;
             position: absolute;
@@ -235,30 +220,18 @@
         .col-sheikhs #modal-info-mobile { color: #ffeea8; text-shadow: 0 0 5px rgba(255,204,0,0.3); }
         .col-fame #modal-info-mobile { color: #ffc4a3; text-shadow: 0 0 5px rgba(255,94,0,0.3); }
 
+        /* === МОБИЛЬНАЯ ВЕРСИЯ === */
         @media (max-width: 900px) {
             #modal-overlay { padding: 20px 10px; }
-            #modal-layout { 
-                flex-direction: column; 
-                gap: 0; 
-            }
-            #external-info { 
-                display: none; 
-            }
-            #modal-content {
-                max-width: 100%;
-                padding-top: 70px;
-            }
-            .close-btn { top: 15px; right: 15px; }
+            #modal-layout { flex-direction: column; gap: 0; }
+            #external-info { display: none; }
+            #modal-content { max-width: 100%; padding-top: 55px; }
+            #modal-content .card-value { white-space: normal; word-wrap: break-word; }
+            .close-btn { top: 10px; right: 10px; }
             
-            .info-btn { display: flex; align-items: center; justify-content: center; left: 15px; }
-            
+            .info-btn { display: flex; align-items: center; justify-content: center; left: 10px; }
             #modal-info-mobile.show-mobile { display: block; }
             #modal-data.hide-mobile { display: none; }
-
-            #modal-content .card-value {
-                white-space: normal;
-                word-wrap: break-word;
-            }
         }
         
     </style>
@@ -311,7 +284,7 @@
     <script>
         const rulesText = {
             legends: "Здесь всё просто: кто активнее всех в чате, тот и попадает в этот раздел.",
-            sheikhs: "Здесь те, кто помогает каналу финансово и поддерживает моё творчество деньгами.",
+            sheikhs: " Здесь те, кто помогает каналу финансово и поддерживает моё творчество деньгами",
             fame: "Самые важные люди, вошедшие в историю. В конце года сюда попадают лучшие из лучших (из ежемесячных топов), а также те, кто выделился легендарными поступками для жизни канала."
         };
 
@@ -352,9 +325,9 @@
             const content = document.getElementById('modal-content');
             const title = document.getElementById('modal-title');
             const dataContainer = document.getElementById('modal-data');
-            
             const extInfo = document.getElementById('external-info');
             const mobInfo = document.getElementById('modal-info-mobile');
+            const infoBtn = document.getElementById('info-btn');
 
             content.className = 'column';
             layout.className = '';
@@ -362,7 +335,7 @@
             
             mobInfo.classList.remove('show-mobile');
             dataContainer.classList.remove('hide-mobile');
-            document.getElementById('info-btn').classList.remove('active');
+            infoBtn.classList.remove('active');
 
             let targetData = [];
             let colClass = '';
@@ -370,24 +343,20 @@
 
             if (type === 'legends') {
                 targetData = boardData.legends;
-                colClass = 'col-legends'; 
-                titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
+                colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
                 layout.classList.add('layout-legends'); 
             } else if (type === 'sheikhs') {
                 targetData = boardData.sheikhs;
-                colClass = 'col-sheikhs'; 
-                titleText = 'ШЕЙХИ КАНАЛА $';
+                colClass = 'col-sheikhs'; titleText = 'ШЕЙХИ КАНАЛА $';
                 layout.classList.add('layout-sheikhs');
             } else if (type === 'fame') {
                 targetData = boardData.hallOfFame;
-                colClass = 'col-fame'; 
-                titleText = 'ЗАЛ СЛАВЫ 🏆';
+                colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
                 layout.classList.add('layout-fame');
             }
 
             content.classList.add(colClass);
             title.innerText = titleText;
-            
             extInfo.innerText = rulesText[type];
             mobInfo.innerText = rulesText[type];
 
