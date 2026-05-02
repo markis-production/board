@@ -8,6 +8,11 @@
     <link rel="icon" type="image/png" href="favicon.png">
 
     <style>
+        /* ИСПРАВЛЕНИЕ #1: Заставляет браузер учитывать отступы внутри ширины элементов */
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #0d0d12;
             background-image: 
@@ -32,7 +37,7 @@
         }
 
         #scale-wrapper {
-            width: 1300px; /* Жесткая ширина плаката */
+            width: 1300px; /* Жесткая ширина плаката для ПК */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -40,20 +45,23 @@
         }
 
         h1 {
-            font-size: 3rem; text-transform: uppercase; letter-spacing: 5px;
+            font-size: 3rem;
+            text-transform: uppercase; letter-spacing: 5px;
             text-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff;
             margin-bottom: 50px; text-align: center;
         }
 
         .board-container {
-            display: flex; gap: 25px; 
+            display: flex;
+            gap: 25px; 
             width: 100%; 
             justify-content: center;
         }
 
         /* ДИЗАЙН СТОЛБИКОВ */
         .column {
-            flex: 1; min-width: 350px; border-radius: 15px; padding: 25px;
+            flex: 1;
+            min-width: 350px; border-radius: 15px; padding: 25px;
             background: linear-gradient(145deg, #1a1a24, #12121a);
             box-shadow: 5px 5px 15px rgba(0,0,0,0.5); border: 1px solid #2a2a35;
             display: flex; flex-direction: column;
@@ -69,12 +77,16 @@
         }
 
         /* Цвета обводок */
-        .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
-        .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
-        .col-fame { border: 2px solid #ff5e00; box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
+        .col-legends { border: 2px solid #ff26a5;
+            box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
+        .col-sheikhs { border: 2px solid #ffcc00;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
+        .col-fame { border: 2px solid #ff5e00;
+            box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
 
         .column h2 {
-            text-align: center; font-size: 2rem; margin-top: 0; padding-bottom: 20px;
+            text-align: center;
+            font-size: 2rem; margin-top: 0; padding-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
         }
         .col-legends h2 { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
@@ -83,11 +95,13 @@
 
         /* ДИЗАЙН КАРТОЧЕК */
         .card {
-            background: #15151c; border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            background: #15151c;
+            border-radius: 10px; padding: 20px; margin-bottom: 15px;
             border: 1px solid #222; position: relative; padding-left: 35px;
         }
         .card::before {
-            content: ''; position: absolute; left: 12px; top: 20%; bottom: 20%;
+            content: '';
+            position: absolute; left: 12px; top: 20%; bottom: 20%;
             width: 4px; border-radius: 4px;
         }
         .col-legends .card::before { background: #ff26a5; box-shadow: 0 0 8px #ff26a5; }
@@ -110,25 +124,30 @@
            МОДАЛЬНОЕ ОКНО (ВЫЛЕТ НА ПЕРЕДНИЙ ПЛАН) 
            ========================================= */
         #modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(13, 13, 18, 0.95);
             backdrop-filter: blur(10px);
             z-index: 9999;
-            display: flex; justify-content: center; align-items: flex-start;
+            display: flex;
+            justify-content: center; align-items: flex-start;
             overflow-y: auto;
             padding: 40px 20px;
             opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease;
         }
         #modal-overlay.visible {
-            opacity: 1; pointer-events: auto;
+            opacity: 1;
+            pointer-events: auto;
         }
 
         #modal-content {
-            width: 100%; max-width: 600px; /* Идеально для телефонов */
+            width: 100%;
+            max-width: 600px;
             margin: auto;
             cursor: default;
-            /* Анимация вылета снизу */
+            /* ИСПРАВЛЕНИЕ #2: Защита от наезда текста на крестик */
+            padding-top: 65px; 
             transform: translateY(50px) scale(0.95);
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -137,14 +156,46 @@
         }
 
         .close-btn {
-            position: absolute; top: 15px; right: 20px;
+            position: absolute;
+            top: 15px; right: 20px;
             width: 45px; height: 45px; border-radius: 50%;
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: white; font-size: 22px; font-weight: bold;
+            color: white; font-size: 22px;
+            font-weight: bold;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; z-index: 10001; transition: 0.3s;
         }
-        .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5; box-shadow: 0 0 15px #ff26a5;}
+        .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5;
+            box-shadow: 0 0 15px #ff26a5;}
+
+        /* =========================================
+           ИСПРАВЛЕНИЕ #3: ОТДЕЛЬНАЯ МОБИЛЬНАЯ ВЕРСИЯ 
+           ========================================= */
+        @media (max-width: 900px) {
+            #scale-wrapper {
+                width: 100%; /* Убираем жесткую ширину для телефонов */
+                padding: 0 15px;
+            }
+            .board-container {
+                flex-direction: column; /* Ставим столбики друг под друга */
+            }
+            .column {
+                min-width: 100%;
+            }
+            h1 {
+                font-size: 2rem; /* Чуть меньше заголовок */
+                margin-bottom: 30px;
+            }
+            #modal-overlay {
+                padding: 20px 10px; /* Меньше отступов по краям на мобилках */
+            }
+            #modal-content {
+                max-width: 100%; /* Чтобы обводка 100% не резалась */
+            }
+            .close-btn {
+                top: 10px; right: 10px; /* Двигаем крестик чуть правее и выше на телефоне */
+            }
+        }
         
     </style>
 </head>
@@ -191,13 +242,22 @@
             const wrapper = document.getElementById('scale-wrapper');
             const outer = document.getElementById('outer-container');
             const screenWidth = window.innerWidth;
+
+            // ИСПРАВЛЕНИЕ #4: Отключаем JS-масштабирование на телефонах
+            // Вместо него будет работать красивый CSS дизайн из @media
+            if (screenWidth <= 900) {
+                wrapper.style.transform = 'none';
+                outer.style.height = 'auto';
+                return;
+            }
+
             const targetWidth = 1350; // 1300 + отступы по краям
 
             if (screenWidth < targetWidth) {
                 const scale = screenWidth / targetWidth;
                 wrapper.style.transform = `scale(${scale})`;
                 // Подгоняем высоту внешнего контейнера, чтобы не было пустых мест
-                outer.style.height = `${wrapper.offsetHeight * scale + 80}px`; 
+                outer.style.height = `${wrapper.offsetHeight * scale + 80}px`;
             } else {
                 wrapper.style.transform = 'none';
                 outer.style.height = 'auto';
@@ -217,20 +277,19 @@
                 container.appendChild(card);
             });
             // Вызываем масштабирование после загрузки карточек
-            adjustScale(); 
+            adjustScale();
         }
 
         // ОТКРЫТИЕ ВЫЛЕТАЮЩЕГО СТОЛБИКА
         function openModal(type) {
             if (typeof boardData === 'undefined') return;
-
             const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             const title = document.getElementById('modal-title');
             const dataContainer = document.getElementById('modal-data');
 
             // Сбрасываем старые стили цвета
-            content.className = 'column'; 
+            content.className = 'column';
             dataContainer.innerHTML = '';
 
             let targetData = [];
@@ -239,11 +298,14 @@
 
             // Определяем, на что нажали
             if (type === 'legends') {
-                targetData = boardData.legends; colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
+                targetData = boardData.legends;
+                colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
             } else if (type === 'sheikhs') {
-                targetData = boardData.sheikhs; colClass = 'col-sheikhs'; titleText = 'ШЕЙХИ КАНАЛА $';
+                targetData = boardData.sheikhs;
+                colClass = 'col-sheikhs'; titleText = 'ШЕЙХИ КАНАЛА $';
             } else if (type === 'fame') {
-                targetData = boardData.hallOfFame; colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
+                targetData = boardData.hallOfFame;
+                colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
             }
 
             // Применяем правильный цвет и заголовок
