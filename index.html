@@ -27,19 +27,16 @@
             font-size: 3rem; text-transform: uppercase; letter-spacing: 5px;
             text-shadow: 0 0 10px #b026ff, 0 0 20px #b026ff;
             margin-bottom: 50px; text-align: center;
-            transition: all 0.4s ease;
+            transition: opacity 0.4s ease;
         }
 
         .board-container {
             display: flex; gap: 25px; 
             width: 1300px; 
             justify-content: center;
-            /* Убираем анимацию gap, чтобы не было прыжка */
-            transition: transform 0.4s ease;
         }
 
-        /* Фокус-режим: скрываем заголовок */
-        body.focus-mode h1 { opacity: 0; transform: translateY(-50px); pointer-events: none; height: 0; margin: 0; }
+        body.focus-mode h1 { opacity: 0; pointer-events: none; height: 0; margin: 0; }
 
         .column {
             flex: 1; min-width: 350px; border-radius: 15px; padding: 25px;
@@ -48,46 +45,46 @@
             display: flex; flex-direction: column;
             cursor: pointer;
             position: relative;
-            /* Фикс плавности: анимируем только ширину и прозрачность */
-            transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, opacity;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
         }
 
-        /* НОВОЕ: Состояние развернутой колонки */
+        /* СОСТОЯНИЕ РАЗВЕРНУТОЙ КОЛОНКИ */
         .column.expanded {
             position: fixed;
-            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100% !important; height: 100% !important;
             z-index: 9999;
             cursor: default;
-            overflow-y: auto; /* Позволяет листать длинный список внутри */
-            min-width: unset;
-            transform: scale(1) !important;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            overflow-y: auto;
+            border-radius: 0;
+            padding: 40px 20px;
+            border: none;
+            box-shadow: none;
+            background: #0d0d12; /* Чистый фон в режиме фокуса */
         }
 
-        /* Скрываем другие, когда одна развернута */
         .board-container.has-expanded .column:not(.expanded) {
             opacity: 0; pointer-events: none;
         }
 
         .close-btn {
-            position: sticky; top: 0; align-self: flex-end;
-            width: 50px; height: 50px; border-radius: 50%;
+            position: fixed; top: 20px; right: 20px;
+            width: 60px; height: 60px; border-radius: 50%;
             background: #ff26a5; border: none;
-            color: black; font-size: 24px; font-weight: bold;
+            color: black; font-size: 30px; font-weight: bold;
             display: none; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10001; margin-bottom: 10px;
-            box-shadow: 0 0 15px #ff26a5;
+            cursor: pointer; z-index: 10001;
+            box-shadow: 0 0 20px #ff26a5;
         }
         .column.expanded .close-btn { display: flex; }
 
-        /* Цвета обводок */
-        .col-legends { border: 2px solid #ff26a5; }
-        .col-sheikhs { border: 2px solid #ffcc00; }
-        .col-fame { border: 2px solid #ff5e00; }
+        /* ЦВЕТА (ВОЗВРАЩЕНО И УЛУЧШЕНО) */
+        .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
+        .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
+        .col-fame { border: 2px solid #ff5e00; box-shadow: 0 0 15px rgba(255, 94, 0, 0.2); }
 
         .column h2 {
-            text-align: center; font-size: 2rem; margin-top: 0; padding-bottom: 15px;
+            text-align: center; font-size: 2.2rem; margin-top: 0; padding-bottom: 20px;
             border-bottom: 1px solid rgba(255,255,255,0.1); text-transform: uppercase;
         }
         .col-legends h2 { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
@@ -95,12 +92,24 @@
         .col-fame h2 { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
 
         .card {
-            background: #15151c; border-radius: 8px; padding: 20px; margin-bottom: 15px;
-            border: 1px solid #222; position: relative; padding-left: 30px;
+            background: #15151c; border-radius: 10px; padding: 20px; margin-bottom: 15px;
+            border: 1px solid #222; position: relative; padding-left: 35px;
         }
-        .card-title { font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; color: #888; }
-        .card-value { font-size: 1.4rem; font-weight: bold; }
         
+        .card::before {
+            content: ''; position: absolute; left: 12px; top: 20%; bottom: 20%;
+            width: 4px; border-radius: 4px;
+        }
+        .col-legends .card::before { background: #ff26a5; box-shadow: 0 0 8px #ff26a5; }
+        .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+        .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
+
+        .card-title { font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .col-legends .card-title { color: #ff26a5; }
+        .col-sheikhs .card-title { color: #ffcc00; }
+        .col-fame .card-title { color: #ff5e00; }
+
+        .card-value { font-size: 1.5rem; font-weight: bold; }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
         .col-fame .card-value { color: #ffc4a3; text-shadow: 0 0 10px #ff5e00; }
@@ -150,11 +159,10 @@
             });
         }
 
-        // РАЗВЕРТЫВАНИЕ
         function expandColumn(col) {
             if (col.classList.contains('expanded')) return;
             
-            // 🔥 МАГИЯ ДЛЯ ТЕЛЕФОНА: Переключаем в мобильный режим
+            // На телефоне переключаем в нативный мобильный режим
             viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
             
             const container = document.getElementById('main-container');
@@ -162,14 +170,13 @@
             col.classList.add('expanded');
             document.body.classList.add('focus-mode');
             
-            window.scrollTo({ top: 0 });
+            window.scrollTo({ top: 0, behavior: 'auto' });
         }
 
-        // ЗАКРЫТИЕ
         function closeColumn(event, btn) {
             event.stopPropagation();
             
-            // 🔥 МАГИЯ ДЛЯ ТЕЛЕФОНА: Возвращаем режим плаката
+            // Возвращаем режим широкого плаката
             viewport.setAttribute('content', 'width=1300');
             
             const col = btn.parentElement;
