@@ -35,8 +35,7 @@
         }
 
         #scale-wrapper {
-            /* ИСПРАВЛЕНИЕ: Расширили плакат до 1450px, чтобы текст влазил в одну строку */
-            width: 1450px; 
+            width: 1450px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -108,8 +107,7 @@
         .card-value { 
             font-size: 1.5rem; 
             font-weight: bold; 
-            /* ИСПРАВЛЕНИЕ: Запрещаем перенос строки для значений */
-            white-space: nowrap; 
+            white-space: nowrap; /* По умолчанию в одну строку */
         }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
@@ -161,6 +159,7 @@
         .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5;
             box-shadow: 0 0 15px #ff26a5;}
 
+        /* РАЗДЕЛ ДЛЯ ИСПРАВЛЕНИЙ НА МОБИЛКЕ */
         @media (max-width: 900px) {
             #modal-overlay {
                 padding: 20px 10px;
@@ -169,6 +168,13 @@
                 max-width: 100%;
                 padding-top: 55px;
             }
+            
+            /* ИСПРАВЛЕНИЕ БАГА: Разрешаем перенос текста ТОЛЬКО в модальном окне на телефоне */
+            #modal-content .card-value {
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
             .close-btn {
                 top: 10px; right: 10px;
             }
@@ -218,7 +224,6 @@
             const wrapper = document.getElementById('scale-wrapper');
             const outer = document.getElementById('outer-container');
             const screenWidth = window.innerWidth;
-            /* ИСПРАВЛЕНИЕ: Целевая ширина теперь 1500px для корректного масштабирования нового размера */
             const targetWidth = 1500; 
 
             if (screenWidth < targetWidth) {
