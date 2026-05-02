@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link rel="icon" type="image/png" href="favicon.png">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1300">
     <title>ДОСКА ПОЧЁТА | MARKIS</title>
     
     <link rel="icon" type="image/png" href="favicon.png">
@@ -31,9 +30,11 @@
             margin-bottom: 50px; text-align: center;
         }
 
+        /* ВАЖНО: Убрали flex-wrap и жестко задали width в 1300px */
         .board-container {
-            display: flex; gap: 25px; max-width: 1300px; width: 100%;
-            flex-wrap: wrap; justify-content: center;
+            display: flex; gap: 25px; 
+            width: 1300px; 
+            justify-content: center;
         }
 
         .column {
@@ -77,19 +78,16 @@
         .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
         .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
 
-        /* ДОСТИЖЕНИЯ (Теперь такие же яркие, как обводка) */
+        /* ДОСТИЖЕНИЯ */
         .card-title {
             font-size: 0.85rem; margin-bottom: 6px; text-transform: uppercase;
             letter-spacing: 1px; font-weight: bold;
         }
-        /* Яркий розовый */
         .col-legends .card-title { color: #ff26a5; text-shadow: 0 0 8px rgba(255, 38, 165, 0.5); }
-        /* Яркий золотой */
         .col-sheikhs .card-title { color: #ffcc00; text-shadow: 0 0 8px rgba(255, 204, 0, 0.5); }
-        /* Яркий оранжевый */
         .col-fame .card-title { color: #ff5e00; text-shadow: 0 0 8px rgba(255, 94, 0, 0.5); }
 
-        /* НИКИ (Остаются как были — сочные и заметные) */
+        /* НИКИ */
         .card-value { font-size: 1.15rem; font-weight: bold; }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
