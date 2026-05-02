@@ -64,13 +64,15 @@
             display: flex; flex-direction: column;
             cursor: pointer;
             position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
         }
         
         #scale-wrapper .column:hover {
             transform: translateY(-10px);
-            box-shadow: 5px 15px 25px rgba(0,0,0,0.8);
         }
+        #scale-wrapper .col-legends:hover { border-color: #ff5ebc; box-shadow: 0 0 35px rgba(255, 38, 165, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
+        #scale-wrapper .col-sheikhs:hover { border-color: #ffe04d; box-shadow: 0 0 35px rgba(255, 204, 0, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
+        #scale-wrapper .col-fame:hover { border-color: #ff8533; box-shadow: 0 0 35px rgba(255, 94, 0, 0.4), 5px 15px 25px rgba(0,0,0,0.8); }
 
         .col-legends { border: 2px solid #ff26a5; box-shadow: 0 0 15px rgba(255, 38, 165, 0.2); }
         .col-sheikhs { border: 2px solid #ffcc00; box-shadow: 0 0 15px rgba(255, 204, 0, 0.2); }
@@ -89,15 +91,26 @@
             background: #15151c;
             border-radius: 10px; padding: 20px; margin-bottom: 15px;
             border: 1px solid #222; position: relative; padding-left: 35px;
+            transition: all 0.3s ease;
         }
         .card::before {
             content: '';
             position: absolute; left: 12px; top: 20%; bottom: 20%;
             width: 4px; border-radius: 4px;
+            transition: all 0.3s ease;
         }
+        
         .col-legends .card::before { background: #ff26a5; box-shadow: 0 0 8px #ff26a5; }
+        .col-legends .card:hover { transform: translateX(5px); border-color: rgba(255,38,165,0.6); box-shadow: 0 0 15px rgba(255,38,165,0.2); }
+        .col-legends .card:hover::before { box-shadow: 0 0 15px #ff26a5; }
+
         .col-sheikhs .card::before { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+        .col-sheikhs .card:hover { transform: translateX(5px); border-color: rgba(255,204,0,0.6); box-shadow: 0 0 15px rgba(255,204,0,0.2); }
+        .col-sheikhs .card:hover::before { box-shadow: 0 0 15px #ffcc00; }
+
         .col-fame .card::before { background: #ff5e00; box-shadow: 0 0 8px #ff5e00; }
+        .col-fame .card:hover { transform: translateX(5px); border-color: rgba(255,94,0,0.6); box-shadow: 0 0 15px rgba(255,94,0,0.2); }
+        .col-fame .card:hover::before { box-shadow: 0 0 15px #ff5e00; }
 
         .card-title { font-size: 1rem; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
         .col-legends .card-title { color: #ff26a5; }
@@ -107,7 +120,7 @@
         .card-value { 
             font-size: 1.5rem; 
             font-weight: bold; 
-            white-space: nowrap; /* По умолчанию в одну строку */
+            white-space: nowrap; 
         }
         .col-legends .card-value { color: #ffb3e1; text-shadow: 0 0 10px #ff26a5; }
         .col-sheikhs .card-value { color: #ffeea8; text-shadow: 0 0 10px #ffcc00; }
@@ -133,10 +146,48 @@
             pointer-events: auto;
         }
 
-        #modal-content {
+        #modal-layout {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 50px;
+            max-width: 1100px;
             width: 100%;
-            max-width: 600px;
             margin: auto;
+            pointer-events: none; 
+        }
+        
+        #modal-layout > * {
+            pointer-events: auto; 
+        }
+
+        #external-info {
+            flex: 1;
+            max-width: 400px;
+            margin-top: 100px; 
+            font-size: 1.3rem;
+            line-height: 1.6;
+            text-transform: uppercase;
+            text-align: left; /* ИСПРАВЛЕНИЕ: Выравнивание по левому краю для идеальной читаемости */
+            font-weight: bold;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        #modal-overlay.visible #external-info {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .layout-legends #external-info { color: #ffb3e1; text-shadow: 0 0 15px #ff26a5, 0 0 30px #ff26a5; }
+        .layout-sheikhs #external-info { color: #ffeea8; text-shadow: 0 0 15px #ffcc00, 0 0 30px #ffcc00; }
+        .layout-fame #external-info { color: #ffc4a3; text-shadow: 0 0 15px #ff5e00, 0 0 30px #ff5e00; }
+
+        #modal-content {
+            flex: 1.5;
+            max-width: 600px;
+            width: 100%;
             cursor: default;
             padding-top: 65px; 
             transform: translateY(50px) scale(0.95);
@@ -156,27 +207,57 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; z-index: 10001; transition: 0.3s;
         }
-        .close-btn:hover { background: #ff26a5; transform: rotate(90deg); border-color: #ff26a5;
-            box-shadow: 0 0 15px #ff26a5;}
+        .col-legends .close-btn:hover { background: #ff26a5; border-color: #ff26a5; box-shadow: 0 0 15px #ff26a5; transform: rotate(90deg); }
+        .col-sheikhs .close-btn:hover { background: #ffcc00; border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00; transform: rotate(90deg); color: #000; }
+        .col-fame .close-btn:hover { background: #ff5e00; border-color: #ff5e00; box-shadow: 0 0 15px #ff5e00; transform: rotate(90deg); }
 
-        /* РАЗДЕЛ ДЛЯ ИСПРАВЛЕНИЙ НА МОБИЛКЕ */
+        .info-btn {
+            display: none;
+            position: absolute;
+            top: 15px; left: 20px;
+            height: 45px; padding: 0 20px; border-radius: 25px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2);
+            color: white; font-size: 1rem; font-weight: bold;
+            cursor: pointer; z-index: 10001; transition: 0.3s;
+        }
+        .col-legends .info-btn.active { background: #ff26a5; border-color: #ff26a5; box-shadow: 0 0 15px #ff26a5; }
+        .col-sheikhs .info-btn.active { background: #ffcc00; border-color: #ffcc00; box-shadow: 0 0 15px #ffcc00; color: #000; }
+        .col-fame .info-btn.active { background: #ff5e00; border-color: #ff5e00; box-shadow: 0 0 15px #ff5e00; }
+
+        #modal-info-mobile {
+            display: none;
+            font-size: 1.15rem; line-height: 1.6;
+            padding: 25px; border-radius: 10px;
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 20px;
+        }
+        .col-legends #modal-info-mobile { color: #ffb3e1; text-shadow: 0 0 5px rgba(255,38,165,0.3); }
+        .col-sheikhs #modal-info-mobile { color: #ffeea8; text-shadow: 0 0 5px rgba(255,204,0,0.3); }
+        .col-fame #modal-info-mobile { color: #ffc4a3; text-shadow: 0 0 5px rgba(255,94,0,0.3); }
+
         @media (max-width: 900px) {
-            #modal-overlay {
-                padding: 20px 10px;
+            #modal-overlay { padding: 20px 10px; }
+            #modal-layout { 
+                flex-direction: column; 
+                gap: 0; 
+            }
+            #external-info { 
+                display: none; 
             }
             #modal-content {
                 max-width: 100%;
-                padding-top: 55px;
+                padding-top: 70px;
             }
+            .close-btn { top: 15px; right: 15px; }
             
-            /* ИСПРАВЛЕНИЕ БАГА: Разрешаем перенос текста ТОЛЬКО в модальном окне на телефоне */
+            .info-btn { display: flex; align-items: center; justify-content: center; left: 15px; }
+            
+            #modal-info-mobile.show-mobile { display: block; }
+            #modal-data.hide-mobile { display: none; }
+
             #modal-content .card-value {
                 white-space: normal;
                 word-wrap: break-word;
-            }
-
-            .close-btn {
-                top: 10px; right: 10px;
             }
         }
         
@@ -210,16 +291,30 @@
     </div>
 
     <div id="modal-overlay" onclick="closeModal(event)">
-        <div id="modal-content" class="column" onclick="event.stopPropagation()">
-            <button class="close-btn" onclick="closeModal(event)">✕</button>
-            <h2 id="modal-title">ТИТУЛ</h2>
-            <div id="modal-data"></div>
+        <div id="modal-layout">
+            <div id="external-info"></div>
+
+            <div id="modal-content" class="column" onclick="event.stopPropagation()">
+                <button class="close-btn" onclick="closeModal(event)">✕</button>
+                <button class="info-btn" id="info-btn" onclick="toggleMobileInfo()">❓ Правила</button>
+                
+                <h2 id="modal-title">ТИТУЛ</h2>
+                
+                <div id="modal-info-mobile"></div>
+                <div id="modal-data"></div>
+            </div>
         </div>
     </div>
 
     <script src="data.js"></script>
 
     <script>
+        const rulesText = {
+            legends: "Здесь всё просто: кто активнее всех в чате, тот и попадает в этот раздел.",
+            sheikhs: "Здесь те, кто помогает каналу финансово и поддерживает моё творчество деньгами.",
+            fame: "Самые важные люди, вошедшие в историю. В конце года сюда попадают лучшие из лучших (из ежемесячных топов), а также те, кто выделился легендарными поступками для жизни канала."
+        };
+
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const outer = document.getElementById('outer-container');
@@ -253,12 +348,21 @@
         function openModal(type) {
             if (typeof boardData === 'undefined') return;
             const overlay = document.getElementById('modal-overlay');
+            const layout = document.getElementById('modal-layout');
             const content = document.getElementById('modal-content');
             const title = document.getElementById('modal-title');
             const dataContainer = document.getElementById('modal-data');
+            
+            const extInfo = document.getElementById('external-info');
+            const mobInfo = document.getElementById('modal-info-mobile');
 
             content.className = 'column';
+            layout.className = '';
             dataContainer.innerHTML = '';
+            
+            mobInfo.classList.remove('show-mobile');
+            dataContainer.classList.remove('hide-mobile');
+            document.getElementById('info-btn').classList.remove('active');
 
             let targetData = [];
             let colClass = '';
@@ -266,17 +370,26 @@
 
             if (type === 'legends') {
                 targetData = boardData.legends;
-                colClass = 'col-legends'; titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
+                colClass = 'col-legends'; 
+                titleText = 'ЛЕГЕНДЫ ЧАТА 💬';
+                layout.classList.add('layout-legends'); 
             } else if (type === 'sheikhs') {
                 targetData = boardData.sheikhs;
-                colClass = 'col-sheikhs'; titleText = 'ШЕЙХИ КАНАЛА $';
+                colClass = 'col-sheikhs'; 
+                titleText = 'ШЕЙХИ КАНАЛА $';
+                layout.classList.add('layout-sheikhs');
             } else if (type === 'fame') {
                 targetData = boardData.hallOfFame;
-                colClass = 'col-fame'; titleText = 'ЗАЛ СЛАВЫ 🏆';
+                colClass = 'col-fame'; 
+                titleText = 'ЗАЛ СЛАВЫ 🏆';
+                layout.classList.add('layout-fame');
             }
 
             content.classList.add(colClass);
             title.innerText = titleText;
+            
+            extInfo.innerText = rulesText[type];
+            mobInfo.innerText = rulesText[type];
 
             targetData.forEach(item => {
                 const card = document.createElement('div');
@@ -293,6 +406,16 @@
             const overlay = document.getElementById('modal-overlay');
             overlay.classList.remove('visible');
             document.body.style.overflow = '';
+        }
+
+        function toggleMobileInfo() {
+            const mobInfo = document.getElementById('modal-info-mobile');
+            const data = document.getElementById('modal-data');
+            const btn = document.getElementById('info-btn');
+            
+            mobInfo.classList.toggle('show-mobile');
+            data.classList.toggle('hide-mobile');
+            btn.classList.toggle('active');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
