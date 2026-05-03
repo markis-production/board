@@ -183,19 +183,23 @@
 }
 
         /* === МОДАЛЬНОЕ ОКНО === */
-        #modal-overlay {
+#modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; 
+            left: 0; 
+            width: 100vw; /* Вместо 100% */
+            height: 100vh; /* Вместо 100% */
             background: rgba(13, 13, 18, 0.95);
             backdrop-filter: blur(10px);
             z-index: 9999;
             display: flex;
-            justify-content: center; align-items: center;
+            justify-content: center; 
+            align-items: center;
             overflow-y: auto;
             padding: 40px 20px;
-            opacity: 0; pointer-events: none;
+            opacity: 0; 
+            pointer-events: none;
             transition: opacity 0.3s ease;
-            transform: translateZ(0);
         }
         #modal-overlay.visible {
             opacity: 1;
